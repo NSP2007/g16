@@ -7,25 +7,118 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <header>
-    <h1>CloudTasks</h1>
-  </header>
 
-  <main>
-    <form id="task-form">
-      <input type="text" id="title" placeholder="Título" required />
-      <input type="text" id="description" placeholder="Descripción" />
-      <input type="date" id="deadline" />
-      <select id="priority">
-        <option value="low">Baja</option>
-        <option value="medium" selected>Media</option>
-        <option value="high">Alta</option>
-      </select>
-      <button type="submit">Agregar tarea</button>
-    </form>
+  <!-- ===================== AUTENTICACIÓN ===================== -->
+  <section id="auth-section" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="brand">
+        <span class="brand-icon">☁️</span>
+        <h1>CloudTasks</h1>
+      </div>
+      <p class="tagline">Organiza tus tareas personales y de equipo en un solo lugar</p>
 
-    <ul id="task-list"></ul>
-  </main>
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button type="button" class="auth-tab" data-tab="register">Crear cuenta</button>
+      </div>
+
+      <form id="login-form" class="auth-form" novalidate>
+        <label for="login-email">Correo electrónico</label>
+        <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" required />
+
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" placeholder="••••••••" required minlength="6" />
+
+        <button type="submit" class="btn btn-primary">Ingresar</button>
+        <p class="form-message" id="login-message"></p>
+      </form>
+
+      <form id="register-form" class="auth-form hidden" novalidate>
+        <label for="register-username">Usuario</label>
+        <input type="text" id="register-username" placeholder="Nombre de usuario" required minlength="3" />
+
+        <label for="register-email">Correo electrónico</label>
+        <input type="email" id="register-email" placeholder="tucorreo@ejemplo.com" required />
+
+        <label for="register-password">Contraseña</label>
+        <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" required minlength="6" />
+
+        <button type="submit" class="btn btn-primary">Registrarme</button>
+        <p class="form-message" id="register-message"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== APLICACIÓN ===================== -->
+  <div id="app-section" class="hidden">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-icon">☁️</span>
+        <h1>CloudTasks</h1>
+      </div>
+      <div class="user-box">
+        <span id="user-display">—</span>
+        <button id="logout-btn" class="btn btn-ghost">Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Tabs de vista -->
+      <nav class="view-tabs">
+        <button type="button" class="view-tab active" data-view="personal">Mis tareas</button>
+        <button type="button" class="view-tab" data-view="equipo">Tareas de equipo</button>
+      </nav>
+
+      <!-- Panel de equipos (solo visible en la vista "equipo") -->
+      <section id="teams-panel" class="panel hidden">
+        <div class="panel-header">
+          <h2>Mis equipos</h2>
+          <button id="new-team-btn" class="btn btn-secondary btn-sm">+ Nuevo equipo</button>
+        </div>
+        <select id="team-select"></select>
+
+        <form id="invite-form" class="inline-form hidden">
+          <input type="email" id="invite-email" placeholder="Correo del integrante a invitar" />
+          <button type="submit" class="btn btn-secondary btn-sm">Invitar</button>
+        </form>
+        <p class="form-message" id="team-message"></p>
+      </section>
+
+      <!-- Formulario nuevo equipo -->
+      <form id="new-team-form" class="inline-form hidden">
+        <input type="text" id="new-team-name" placeholder="Nombre del equipo" required />
+        <button type="submit" class="btn btn-primary btn-sm">Crear</button>
+        <button type="button" id="cancel-team-btn" class="btn btn-ghost btn-sm">Cancelar</button>
+      </form>
+
+      <!-- Formulario de tarea -->
+      <form id="task-form" class="task-form">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Título de la tarea" required />
+          <select id="priority">
+            <option value="baja">Prioridad: Baja</option>
+            <option value="media" selected>Prioridad: Media</option>
+            <option value="alta">Prioridad: Alta</option>
+          </select>
+        </div>
+        <textarea id="description" placeholder="Descripción" rows="2"></textarea>
+        <div class="form-row">
+          <label class="field-label">
+            Fecha planeada
+            <input type="date" id="planned-date" />
+          </label>
+          <label class="field-label">
+            Fecha límite
+            <input type="date" id="due-date" />
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar tarea</button>
+      </form>
+
+      <ul id="task-list" class="task-list"></ul>
+      <p id="empty-state" class="empty-state hidden">No hay tareas todavía. ¡Agrega la primera!</p>
+    </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/app.js"></script>
