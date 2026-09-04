@@ -1,0 +1,9 @@
+# Editor / IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Variables de entorno y credenciales (Supabase, Vercel, Cloudflare)
+.env
+.env.local
+.env.*.local

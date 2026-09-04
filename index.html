@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudTasks</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>CloudTasks</h1>
+  </header>
+
+  <main>
+    <form id="task-form">
+      <input type="text" id="title" placeholder="Título" required />
+      <input type="text" id="description" placeholder="Descripción" />
+      <input type="date" id="deadline" />
+      <select id="priority">
+        <option value="low">Baja</option>
+        <option value="medium" selected>Media</option>
+        <option value="high">Alta</option>
+      </select>
+      <button type="submit">Agregar tarea</button>
+    </form>
+
+    <ul id="task-list"></ul>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

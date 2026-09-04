@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+form input,
+form select {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.4rem;
+}
+
+#task-list {
+  list-style: none;
+  padding: 0;
+}
+
+#task-list li {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+}
