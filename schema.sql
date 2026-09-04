@@ -3,6 +3,17 @@
 -- Basado en el modelo ER: USER -> TASK -> (PERSONAL_TASK | TEAM_TASK)
 -- =========================================================
 -- Ejecutar este script completo en el SQL Editor de Supabase.
+--
+-- IMPORTANTE: si ya existe una tabla "tasks" de una versión anterior
+-- del proyecto (con columnas como title/deadline en vez de
+-- name/planned_date/due_date), es INCOMPATIBLE con este esquema.
+-- Estas líneas la eliminan junto con cualquier tabla previa para
+-- dejar una instalación limpia. Bórralas solo si ya tienes datos
+-- reales que quieras conservar.
+drop table if exists public.tasks cascade;
+drop table if exists public.team_members cascade;
+drop table if exists public.teams cascade;
+drop table if exists public.profiles cascade;
 
 -- ---------------------------------------------------------
 -- 1) PROFILES (extiende auth.users -> entidad USER del modelo)
