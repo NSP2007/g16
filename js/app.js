@@ -1,4 +1,7 @@
-const STORAGE_KEY = "cloudtasks:tasks";
+const SUPABASE_URL = "https://agpyxjslkvggabibexvc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_o3g3qTZbeTOKnoAcVHqigA_HwSJ2GOu";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const form = document.getElementById("task-form");
 const titleInput = document.getElementById("title");
@@ -7,16 +10,26 @@ const deadlineInput = document.getElementById("deadline");
 const priorityInput = document.getElementById("priority");
 const taskList = document.getElementById("task-list");
 
-function getTasks() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+async function getTasks() {
+  const { data, error } = await supabaseClient
+    .from("tasks")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error al obtener tareas:", error);
+    return [];
+  }
+  return data;
 }
 
-function saveTasks(tasks) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+async function createTask(task) {
+  const { error } = await supabaseClient.from("tasks").insert([task]);
+  if (error) console.error("Error al crear tarea:", error);
 }
 
-function renderTasks() {
-  const tasks = getTasks();
+async function renderTasks() {
+  const tasks = await getTasks();
   taskList.innerHTML = "";
   tasks.forEach((task) => {
     const li = document.createElement("li");
@@ -25,22 +38,15 @@ function renderTasks() {
   });
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const task = {
-    id: crypto.randomUUID(),
+  await createTask({
     title: titleInput.value,
     description: descriptionInput.value,
-    completed: false,
-    created_at: new Date().toISOString(),
-    deadline: deadlineInput.value,
+    deadline: deadlineInput.value || null,
     priority: priorityInput.value,
-  };
-
-  const tasks = getTasks();
-  tasks.push(task);
-  saveTasks(tasks);
+  });
 
   form.reset();
   renderTasks();
