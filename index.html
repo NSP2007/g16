@@ -102,7 +102,12 @@
           </select>
         </div>
         <textarea id="description" placeholder="Descripción" rows="2"></textarea>
-        <div class="form-row">
+
+        <button type="button" id="dates-toggle" class="dates-toggle" aria-expanded="false">
+          <span class="dates-toggle-icon">▸</span> Agregar fechas (opcional)
+        </button>
+
+        <div class="form-row dates-row hidden" id="dates-row">
           <label class="field-label">
             Fecha planeada
             <input type="date" id="planned-date" />
@@ -110,9 +115,12 @@
           <label class="field-label">
             Fecha límite
             <input type="date" id="due-date" />
+            <span class="field-hint">Por si la fecha planeada se cumple y la tarea sigue pendiente</span>
           </label>
         </div>
+
         <button type="submit" class="btn btn-primary">Agregar tarea</button>
+        <p class="form-message" id="task-message"></p>
       </form>
 
       <ul id="task-list" class="task-list"></ul>

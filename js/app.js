@@ -38,8 +38,11 @@ const descriptionInput = document.getElementById("description");
 const plannedDateInput = document.getElementById("planned-date");
 const dueDateInput = document.getElementById("due-date");
 const priorityInput = document.getElementById("priority");
+const datesToggle = document.getElementById("dates-toggle");
+const datesRow = document.getElementById("dates-row");
 const taskList = document.getElementById("task-list");
 const emptyState = document.getElementById("empty-state");
+const taskMessage = document.getElementById("task-message");
 
 // ---------- Estado local ----------
 let currentUser = null;
@@ -274,6 +277,12 @@ viewTabs.forEach((tab) => {
 // TAREAS
 // =========================================================
 
+datesToggle.addEventListener("click", () => {
+  const isOpen = !datesRow.classList.contains("hidden");
+  datesRow.classList.toggle("hidden", isOpen);
+  datesToggle.setAttribute("aria-expanded", String(!isOpen));
+});
+
 async function getTasks() {
   let query = supabaseClient.from("tasks").select("*").order("created_at", { ascending: false });
 
@@ -287,6 +296,7 @@ async function getTasks() {
   const { data, error } = await query;
   if (error) {
     console.error("Error al obtener tareas:", error);
+    setMessage(taskMessage, "No se pudieron cargar las tareas: " + error.message, "error");
     return [];
   }
   return data;
@@ -294,8 +304,11 @@ async function getTasks() {
 
 async function createTask(task) {
   const { error } = await supabaseClient.from("tasks").insert([task]);
-  if (error) console.error("Error al crear tarea:", error);
-  return !error;
+  if (error) {
+    console.error("Error al crear tarea:", error);
+    return error.message;
+  }
+  return null;
 }
 
 async function toggleTaskCompleted(id, completed) {
@@ -391,13 +404,19 @@ async function renderTasks() {
 
 taskForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  setMessage(taskMessage, "", null);
 
-  if (currentView === "equipo" && !currentTeamId) {
-    alert("Selecciona o crea un equipo antes de agregar una tarea de equipo.");
+  if (!nameInput.value.trim()) {
+    setMessage(taskMessage, "El título de la tarea es obligatorio.", "error");
     return;
   }
 
-  const ok = await createTask({
+  if (currentView === "equipo" && !currentTeamId) {
+    setMessage(taskMessage, "Selecciona o crea un equipo antes de agregar una tarea de equipo.", "error");
+    return;
+  }
+
+  const errorMessage = await createTask({
     name: nameInput.value.trim(),
     description: descriptionInput.value.trim() || null,
     planned_date: plannedDateInput.value || null,
@@ -408,9 +427,12 @@ taskForm.addEventListener("submit", async (event) => {
     team_id: currentView === "equipo" ? currentTeamId : null,
   });
 
-  if (ok) {
-    taskForm.reset();
-    priorityInput.value = "media";
-    await renderTasks();
+  if (errorMessage) {
+    setMessage(taskMessage, "No se pudo crear la tarea: " + errorMessage, "error");
+    return;
   }
+
+  taskForm.reset();
+  priorityInput.value = "media";
+  await renderTasks();
 });
